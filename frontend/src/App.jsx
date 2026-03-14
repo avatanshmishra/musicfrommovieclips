@@ -8,9 +8,9 @@ import CreateSpotifyPlaylist from './components/CreateSpotifyPlaylist'
 import { generatePlaylist, generatePlaylistFromClip } from './api'
 
 const initialForm = {
-  movie_title: 'Interstellar',
+  movie_title: '',
   scene_description:
-    'A ship slips across the dark curve of a planet while the crew faces impossible choices. The moment feels huge, emotional, and full of cosmic loneliness.',
+    '',
   preferred_language: 'any',
   tracks_count: 12,
 }
@@ -135,7 +135,7 @@ export default function App() {
             <form onSubmit={handleSubmit} className="form">
               <label>
                 Movie title
-                <input name="movie_title" value={form.movie_title} onChange={handleChange} placeholder="Interstellar" />
+                <input name="movie_title" value={form.movie_title} onChange={handleChange} placeholder="Enter movie title(optional)" />
               </label>
 
               <label>
@@ -145,7 +145,7 @@ export default function App() {
                   value={form.scene_description}
                   onChange={handleChange}
                   rows="7"
-                  placeholder="Describe what matters emotionally: loss, awe, reunion, dread, romance, silence..."
+                  placeholder="Describe what matters emotionally e.g, loss, awe, reunion, dread, romance, silence...(optional)"
                 />
               </label>
 
