@@ -2,38 +2,52 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL
 
 export default function CreateSpotifyPlaylist({ tracks }) {
   const createPlaylist = async () => {
-    const accessToken = localStorage.getItem('spotify_token')
-    const trackUris = tracks.map((track) => track.uri).filter(Boolean)
+    try {
+      const accessToken = localStorage.getItem('spotify_token')
+      const trackUris = tracks.map((track) => track.uri).filter(Boolean)
 
-    if (!accessToken) {
-      alert('Please connect Spotify first')
-      return
-    }
+      console.log('Spotify token:', accessToken)
+      console.log('Track URIs:', trackUris)
 
-    if (!trackUris.length) {
-      alert('No Spotify track URIs found')
-      return
-    }
+      if (!accessToken) {
+        alert('Please connect Spotify first')
+        return
+      }
 
-    const res = await fetch(`${API_BASE}/api/spotify/create-playlist`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        access_token: accessToken,
-        playlist_name: 'AI Movie Scene Playlist',
-        description: 'Generated from movie scene analysis',
-        track_uris: trackUris,
-      }),
-    })
+      if (!trackUris.length) {
+        alert('No Spotify track URIs found in generated tracks')
+        return
+      }
 
-    const data = await res.json()
+      const res = await fetch(`${API_BASE}/api/spotify/create-playlist`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          access_token: accessToken,
+          playlist_name: 'AI Movie Scene Playlist',
+          description: 'Generated from movie scene analysis',
+          track_uris: trackUris,
+        }),
+      })
 
-    if (data.playlist_url) {
-      window.open(data.playlist_url, '_blank')
-    } else {
-      alert(data.error || 'Failed to create playlist')
+      const data = await res.json()
+      console.log('Create playlist response:', data)
+
+      if (!res.ok) {
+        alert(data.detail || data.error || 'Failed to create playlist')
+        return
+      }
+
+      if (data.playlist_url) {
+        window.open(data.playlist_url, '_blank')
+      } else {
+        alert('Playlist created but no URL was returned')
+      }
+    } catch (error) {
+      console.error(error)
+      alert('Something went wrong while creating the Spotify playlist')
     }
   }
 
